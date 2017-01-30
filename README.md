@@ -104,6 +104,47 @@ Source: [Udacity][11]
 4. Restart the Apache server for mod_wsgi to load:  
   `$ sudo service apache2 restart`  
 
+### 10 - Install and configure PostgreSQL
+Source: [DigitalOcean][17] (alternatively, nice short guide on [Kill The Yak][18] as well)  
+
+1. Install PostgreSQL:  
+  `$ sudo apt-get install postgresql postgresql-contrib`
+2. Check that no remote connections are allowed (default):  
+  `$ sudo nano /etc/postgresql/9.3/main/pg_hba.conf`
+3. Open the database setup file:  
+  `$ sudo nano catalog_database.py`
+4. Change the line starting with "engine" to (fill in a password):  
+  ```engine = create_engine('postgresql://catalog:PW-FOR-CATALOG-DB@localhost/catalog')```  
+5. Change the same line in catalog.py and catalog_populator.py
+6. Rename catalog.py:  
+  `$ mv catalog.py __init__.py`
+7. Create needed linux user for psql:  
+  `$ sudo adduser catalog` (choose a password)
+8. Change to default user postgres:  
+  `$ sudo su - postgres`
+9. Connect to the system:  
+  `$ psql`
+10. Add postgres user with password:  
+  Sources: [Trackets Blog][19] and [Super User][20]
+  1. Create user with LOGIN role and set a password:  
+    `# create user catalog with password 'PW-FOR-CATALOG-DB';`
+  2. Allow the user to create database tables:  
+    `# alter user catalog createdb;`
+  3. *List current roles and their attributes:
+    `# \du`
+11. Create database:  
+  `# create database catalog with owner catalog;`
+12. Connect to the database catalog
+  `# \c catalog` 
+13. Revoke all rights:  
+  `# revoke all on scheme public from public;`
+14. Grant only access to the catalog role:  
+  `# grant all on schema public to catalog;`
+15. Exit out of PostgreSQl and the postgres user:  
+  `# \q`, then `$ exit` 
+16. Create postgreSQL database schema:  
+  $ python catalog_database.py
+
 ### 11 - Install git, clone and setup your Catalog App project
 #### 11.1 - Install and configure git
 Source: [GitHub][13]
@@ -232,47 +273,6 @@ Source: [DigitalOcean][14]
   `$ sudo pip install sqlalchemy`
 7. Install the Python PostgreSQL adapter psycopg:  
   `$ sudo apt-get install python-psycopg2`
-
-### 10 - Install and configure PostgreSQL
-Source: [DigitalOcean][17] (alternatively, nice short guide on [Kill The Yak][18] as well)  
-
-1. Install PostgreSQL:  
-  `$ sudo apt-get install postgresql postgresql-contrib`
-2. Check that no remote connections are allowed (default):  
-  `$ sudo nano /etc/postgresql/9.3/main/pg_hba.conf`
-3. Open the database setup file:  
-  `$ sudo nano catalog_database.py`
-4. Change the line starting with "engine" to (fill in a password):  
-  ```engine = create_engine('postgresql://catalog:PW-FOR-CATALOG-DB@localhost/catalog')```  
-5. Change the same line in catalog.py and catalog_populator.py
-6. Rename catalog.py:  
-  `$ mv catalog.py __init__.py`
-7. Create needed linux user for psql:  
-  `$ sudo adduser catalog` (choose a password)
-8. Change to default user postgres:  
-  `$ sudo su - postgres`
-9. Connect to the system:  
-  `$ psql`
-10. Add postgres user with password:  
-  Sources: [Trackets Blog][19] and [Super User][20]
-  1. Create user with LOGIN role and set a password:  
-    `# create user catalog with password 'PW-FOR-CATALOG-DB';`
-  2. Allow the user to create database tables:  
-    `# alter user catalog createdb;`
-  3. *List current roles and their attributes:
-    `# \du`
-11. Create database:  
-  `# create database catalog with owner catalog;`
-12. Connect to the database catalog
-  `# \c catalog` 
-13. Revoke all rights:  
-  `# revoke all on scheme public from public;`
-14. Grant only access to the catalog role:  
-  `# grant all on schema public to catalog;`
-15. Exit out of PostgreSQl and the postgres user:  
-  `# \q`, then `$ exit` 
-16. Create postgreSQL database schema:  
-  $ python catalog_database.py
 
 #### 11.5 - Run application 
 1. Restart Apache:  
